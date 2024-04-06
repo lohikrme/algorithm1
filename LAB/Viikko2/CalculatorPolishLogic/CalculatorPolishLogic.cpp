@@ -83,11 +83,14 @@ bool isOperator(Element c) {
 
 // transforms mathematical expression to polish notation
 string stringToPolishLogic(const string& expression) {
-    Stack operators; // a stack that stores operators + - * / ^
-    string output; // expression in reverse polish notation form
+    // a stack that stores operators + - * / ^
+    Stack operators; 
+    // expression in reverse polish notation form
+    string output; 
 
     for (char c : expression) {
-        string s(1, c); // transform char to string for usage with stack.push() or priority map
+        // transform char to string so char works with Element of stack and priority map
+        string s(1, c); 
         if (c == ' ') {
             continue;
         }
@@ -95,9 +98,9 @@ string stringToPolishLogic(const string& expression) {
             output += c;
         }
 
-        // store operators to stack. if there already is operator, add operator to output
-        // priority determines that ^ is before * and / which are before + -
-        // if operators.top is "(" that starts a sub-expression which must be run through
+        // if meet an operator of higher priority,
+        // then pop the lower priority operator from stack to output,
+        // and push from expression the higher priority operator to the stack
         else if (isOperator(s)) {
             while (!operators.isEmpty() && operators.top() != "(" && priority[operators.top()] >= priority[s]) {
                 output += operators.top();
@@ -107,6 +110,10 @@ string stringToPolishLogic(const string& expression) {
         }
 
         // here starts a new sub-expression, push "(" into operators
+        // that is a sign that a new sub-expression begins
+        // if face multiple (), for example ((2+2)+3)*2
+        // then store both (( to the operators, whichs allows to store
+        // different layers of sub-expressions
         else if (c == '(') {
             operators.push(s);
         }
@@ -137,15 +144,22 @@ int main()
 {
     while (true) {
         
+        // instructions to the user of calculator
         cout << "Welcome to our calculator!" << endl 
             << "You can use + - * / ^ () operators." << endl
             << "If you want to exit, press 'e'" << endl 
             << "Write your calculation here:" << endl;
-        string expression; // store user given expression here
-        getline(cin, expression); // use getline so cin wont stop at first space
+
+        // store user given expression here, use getline so wont stop at first space
+        string expression; 
+        getline(cin, expression); 
+
+        // allow user to end calculating by pressing "e"
         if (expression == "e" or expression == "E") {
             break;
         }
+        
+        // print the polished_expression to user
         string polished_expression = stringToPolishLogic(expression);
         cout << endl << "The answer to your calculation is: " << endl;
         cout << polished_expression << endl << endl;
