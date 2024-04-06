@@ -52,3 +52,6 @@ nCrunchTemp_*
 *.dbproj.schemaview
 *.pfx
 *.publishsettings
+
+# ignore .vs folder
+.vs
