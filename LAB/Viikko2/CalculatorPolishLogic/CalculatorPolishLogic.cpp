@@ -1,8 +1,10 @@
 // CalculatorPolishLogic.cpp : This file contains the 'main' function.
 // 8th april 2024 Joonas Harjula
+// dependant on c++ 14th version
 
 #include <iostream>
 #include <vector> 
+#include <sstream>
 #include <string>
 #include <stdexcept>
 #include <cctype>
@@ -11,15 +13,22 @@ using namespace std;
 
 // defines local data type to be used inside stacks
 typedef string Element;
+typedef double Number;
+
+// defines mysteryDouble to be used in stringToDouble function and calculate function
+double mysteryDouble = -952367.9238123;
 
 //---------------------------------------------------------------------------
 //---------------- STACK IMPLEMENTATION -------------------------------------
 
 // implements a custom Stack class instead of using <stack> library
+// user can create a new Stack object and decide the preferred datatype
+template <typename LocalType>
 class Stack {
 
 private:
-    vector<Element> elements;
+    vector<LocalType> elements;
+    int items = 0;
 
 public:
     // [constructor] reserves space for elements to optimize memory allocation
@@ -28,14 +37,16 @@ public:
     }
 
     // adds a new element to the top of stack
-    void push(Element value) {
+    void push(LocalType value) {
         elements.push_back(value);
+        items += 1;
     }
 
     // deletes the top element from stack
     void pop() {
         if (!elements.empty()) {
             elements.pop_back();
+            items -= 1;
         }
         else {
             throw runtime_error("Stack underflow!");
@@ -43,7 +54,7 @@ public:
     }
 
     // returns the top element from stack without deleting it
-    Element top() {
+    LocalType top() {
         if (!elements.empty()) {
             return elements.back();
         }
@@ -60,6 +71,11 @@ public:
     // checks if stack is empty or not
     bool isEmpty() {
         return elements.empty();
+    }
+
+    // returns how many items are inside the stack
+    int size() {
+        return items;
     }
 };
 
@@ -81,6 +97,7 @@ bool isOperator(Element c) {
     return priority.count(c) > 0;
 }
 
+//-------------- POLISH LOGIC FUNCTION-----------------------
 // transforms mathematical expression to polish notation
 string stringToPolishLogic(const string& expression) {
 
@@ -88,7 +105,7 @@ string stringToPolishLogic(const string& expression) {
     string num;
 
     // creates a stack that stores operators + - * / ^
-    Stack operators;
+    Stack<Element> operators;
 
     // stores reverse polish form of expression
     string output;
@@ -122,6 +139,10 @@ string stringToPolishLogic(const string& expression) {
         // then u face 8, add to num, face *, release 8, 
         // because priority of + is not >= *, store *. 
         else if (isOperator(s)) {
+
+            // if operator is minus and is before any numbers, after ( or after an operator
+            // we can assume that these minuses are actually part of the following numbers
+            // and in these situations we add '-' to the number, despite usually '-' is an operator
             if (!num.empty()) {
                 output += num + ";";
                 num.clear();
@@ -138,7 +159,10 @@ string stringToPolishLogic(const string& expression) {
         // if num contains something, release it as it belongs to the upper sentence
         // then store '(' to operators
         else if (c == '(') {
-            if (!num.empty()) {
+            if (num.empty()) {
+                continue;
+            }
+            else if (!num.empty()) {
                 output += num + ";";
                 num.clear();
             }
@@ -181,6 +205,84 @@ string stringToPolishLogic(const string& expression) {
     return output;
 }
 
+//--------------- ISDOUBLE FUNCTION --------------------------------------
+// transforms string to double, or returns a secretDouble if string is not a number
+double stringToDouble(const std::string& s)
+{
+    bool isValid = false;
+    std::istringstream iss(s);
+    double d;
+    isValid = (iss >> d) && iss.eof();
+    return isValid ? d : mysteryDouble;
+}
+
+
+//--------------- CALCULATE FUNCTION ---------------------------------------
+// receives reverse polish notation as input param and returns calculated answer
+string calculate(string notation) {
+
+    // store here the local Double during loop phase
+    double localDouble;
+
+    // split notation into this vector
+    vector<string> notationVector;
+
+    // take 2 numbers from this stack every time you meet an operator
+    Stack<Number> numberStack; 
+
+    // split received notation by ";" and add to the notationVector via istringstream method
+    istringstream iss(notation);
+    string word;
+    while (getline(iss, word, ';')) {
+        notationVector.push_back(word);
+    }
+
+    // run through every element of notationVector
+    for (const auto& element : notationVector) {
+        cout << "element: " << element << endl;
+
+        // try to transform the current element to a double, if result is != mysteryDouble, it is a double, if == mysteryDobule, it is an operator
+        localDouble = stringToDouble(element);
+        cout << "localDouble: " << localDouble << endl;
+
+        // element was a number, so push it in the numberStack
+        if (localDouble != mysteryDouble) {
+            numberStack.push(localDouble);
+        }
+
+        // else was an operator, so take 2 numbers from stack, calculate their new value using current operator and push back the new value
+        else {
+            if (numberStack.size() < 2) {
+                throw std::runtime_error("Not enough numbers for operation");
+            }
+            double num2 = numberStack.top();
+            numberStack.pop();
+            double num1 = numberStack.top();
+            numberStack.pop();
+
+            if (element == "+") {
+                numberStack.push(num1 + num2);
+            }
+            else if (element == "-") {
+                numberStack.push(num1 - num2);
+            }
+            else if (element == "*") {
+                numberStack.push(num1 * num2);
+            }
+            else if (element == "/") {
+                numberStack.push(num1 / num2);
+            }
+            else if (element == "^") {
+                numberStack.push(pow(num1, num2));
+            }
+        }
+    }
+
+    // take the answer from stack and return it
+    string answer = to_string(numberStack.top());
+    return answer;
+}
+
 
 int main()
 {
@@ -203,7 +305,13 @@ int main()
         
         // print the polished_expression to user
         string polished_expression = stringToPolishLogic(expression);
-        cout << endl << "The answer to your calculation is: " << endl;
+        cout << endl << "The reverse polish notation to your calculation is: " << endl;
         cout << polished_expression << endl << endl;
+
+        string answer = "trololoo";
+        answer = calculate(polished_expression);
+
+        cout << endl << "The answer to your calculation is: " << endl;
+        cout << answer << endl << endl;
     }
 }
