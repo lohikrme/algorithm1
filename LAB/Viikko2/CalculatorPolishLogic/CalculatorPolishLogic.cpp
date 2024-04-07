@@ -110,6 +110,9 @@ string stringToPolishLogic(const string& expression) {
     // stores reverse polish form of expression
     string output;
 
+    // if last letter was "(", that means "-" must be a prefix for number
+    bool previousIsOpenParenthesis = false;
+
     // iterates through every character of expression
     for (char c : expression) {
 
@@ -124,13 +127,13 @@ string stringToPolishLogic(const string& expression) {
         // if character is a number or "," or "." they are part of full numbers
         // replace ',' with '.' automatically
         else if (isdigit(c) || c == ',' || c == '.') {
+            previousIsOpenParenthesis = false;
             if (c == ',') {
                 num += '.';
             }
             else {
                 num += c;
             }
-            
         }
 
         // if character is an operator, we add previous number to output
@@ -139,13 +142,17 @@ string stringToPolishLogic(const string& expression) {
         // then u face 8, add to num, face *, release 8, 
         // because priority of + is not >= *, store *. 
         else if (isOperator(s)) {
-
-            // if operator is minus and is before any numbers, after ( or after an operator
-            // we can assume that these minuses are actually part of the following numbers
-            // and in these situations we add '-' to the number, despite usually '-' is an operator
-            if (!num.empty()) {
+            if (previousIsOpenParenthesis && s == "-") {
+                output += "-";
+                previousIsOpenParenthesis = false;
+                continue;
+            }
+            
+            // if meet an operator, add number to the output
+            else if (!num.empty()) {
                 output += num + ";";
                 num.clear();
+                previousIsOpenParenthesis = false;
             }
             while (!operators.isEmpty() && operators.top() != "(" && priority[operators.top()] >= priority[s]) {
                 output += operators.top() + ";";
@@ -159,6 +166,7 @@ string stringToPolishLogic(const string& expression) {
         // if num contains something, release it as it belongs to the upper sentence
         // then store '(' to operators
         else if (c == '(') {
+            previousIsOpenParenthesis = true;
             if (num.empty()) {
                 continue;
             }
@@ -239,11 +247,11 @@ string calculate(string notation) {
 
     // run through every element of notationVector
     for (const auto& element : notationVector) {
-        cout << "element: " << element << endl;
+        // cout << "element: " << element << endl;
 
         // try to transform the current element to a double, if result is != mysteryDouble, it is a double, if == mysteryDobule, it is an operator
         localDouble = stringToDouble(element);
-        cout << "localDouble: " << localDouble << endl;
+        // cout << "localDouble: " << localDouble << endl;
 
         // element was a number, so push it in the numberStack
         if (localDouble != mysteryDouble) {
@@ -289,8 +297,11 @@ int main()
     while (true) {
         
         // instructions to the user of calculator
-        cout << "Welcome to our calculator!" << endl 
+        cout << "Welcome to our calculator!" << endl
             << "You can use + - * / ^ () operators." << endl
+            << "If you want to use the '-' operator as a prefix" << endl
+            << "such as '-2+2', you must write every number with prefix" << endl
+            << "inside parenthesis. So correct form would be '(-2)+2'" << endl
             << "If you want to exit, press 'e'" << endl 
             << "Write your calculation here:" << endl;
 
