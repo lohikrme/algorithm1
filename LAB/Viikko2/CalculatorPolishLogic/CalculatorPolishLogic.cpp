@@ -1,5 +1,5 @@
 // CalculatorPolishLogic.cpp : This file contains the 'main' function.
-// 6th april 2024 Joonas Harjula
+// 8th april 2024 Joonas Harjula
 
 #include <iostream>
 #include <vector> 
@@ -83,45 +83,78 @@ bool isOperator(Element c) {
 
 // transforms mathematical expression to polish notation
 string stringToPolishLogic(const string& expression) {
-    // a stack that stores operators + - * / ^
-    Stack operators; 
-    // expression in reverse polish notation form
-    string output; 
 
+    // stores all full numbers here
+    string num;
+
+    // creates a stack that stores operators + - * / ^
+    Stack operators;
+
+    // stores reverse polish form of expression
+    string output;
+
+    // iterates through every character of expression
     for (char c : expression) {
-        // transform char to string so char works with Element of stack and priority map
-        string s(1, c); 
+
+        // character is transformed to string s
+        string s(1, c);
+
+        // if character is empty, skip this character
         if (c == ' ') {
             continue;
         }
-        else if (isdigit(c)) {
-            output += c;
+
+        // if character is a number or "," or "." they are part of full numbers
+        // replace ',' with '.' automatically
+        else if (isdigit(c) || c == ',' || c == '.') {
+            if (c == ',') {
+                num += '.';
+            }
+            else {
+                num += c;
+            }
+            
         }
 
-        // if meet an operator of higher priority,
-        // then pop the lower priority operator from stack to output,
-        // and push from expression the higher priority operator to the stack
+        // if character is an operator, we add previous number to output
+        // think of situation "200+8*12"
+        // first num is 200, then u get +, release 200, store +
+        // then u face 8, add to num, face *, release 8, 
+        // because priority of + is not >= *, store *. 
         else if (isOperator(s)) {
+            if (!num.empty()) {
+                output += num + ";";
+                num.clear();
+            }
             while (!operators.isEmpty() && operators.top() != "(" && priority[operators.top()] >= priority[s]) {
-                output += operators.top();
+                output += operators.top() + ";";
                 operators.pop();
             }
             operators.push(s);
         }
 
-        // here starts a new sub-expression, push "(" into operators
-        // that is a sign that a new sub-expression begins
-        // if face multiple (), for example ((2+2)+3)*2
-        // then store both (( to the operators, whichs allows to store
-        // different layers of sub-expressions
+
+        // if character is an opening parenthesis, it means a new sub-expression starts
+        // if num contains something, release it as it belongs to the upper sentence
+        // then store '(' to operators
         else if (c == '(') {
+            if (!num.empty()) {
+                output += num + ";";
+                num.clear();
+            }
             operators.push(s);
         }
 
-        // sub-expression ends, so add all operators from stack to output except "(" which is just deleted
+        // if character is a closing parenthesis, it means the latest sub-expression ends
+        // if num contains something, release it as it belongs to this same sub-expression
+        // then iterate through operators releasing them until u find the matching parenthesis
         else if (c == ')') {
+            if (!num.empty()) {
+                output += num + ";";
+                num.clear();
+            }
             while (!operators.isEmpty() && operators.top() != "(") {
-                output += operators.top();
+                output += operators.top() + ";";
                 operators.pop();
             }
             if (!operators.isEmpty()) {
@@ -130,12 +163,21 @@ string stringToPolishLogic(const string& expression) {
         }
     }
 
-    // now we have added 
+    // after every character is iterated, if num contains something, release it. 
+    // think of example (22+22)*(44+44)
+    // now we have the last 44 in num
+    if (!num.empty()) {
+        output += num + ";";
+    }
+
+    // after every char is iterated and last num is released
+    // release the last operators.
     while (!operators.isEmpty()) {
-        output += operators.top();
+        output += operators.top() + ";";
         operators.pop();
     }
 
+    // this output is now in reverse polish notation
     return output;
 }
 
