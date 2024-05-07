@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{76342fa0-dd4b-4c58-a208-60f0c938caab}</ProjectGuid>
-    <RootNamespace>QuickSort</RootNamespace>
+    <ProjectGuid>{7d97e186-5fd5-4c59-8e01-55ca34e9060e}</ProjectGuid>
+    <RootNamespace>ModelSearchAlgos</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,7 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="QuickSort.cpp" />
+    <ClCompile Include="BinaryTreeSearch-v2.cpp" />
+    <ClCompile Include="BinaryTreeSearch.cpp" />
+    <ClCompile Include="ModelSearchAlgos.cpp" />
+    <ClCompile Include="SequentialSearchOrdered.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
