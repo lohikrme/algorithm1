@@ -59,6 +59,7 @@ int main()
     cout << "Tiger class works as expected!" << endl;
     cout << endl;
 
+    // test that also Shark class works which also inherited Animal class
     cout << "Testing Shark class..." << endl;
     Shark shark1 = Shark("Hampaaton", date3, 1500.2, true, SeaAreas::SOUTH_ATLANTIC_OCEAN);
     cout << shark1.toString() << endl;
@@ -86,9 +87,7 @@ int main()
 
     cout << "Animals are created, 3 tigers and 2 sharks." << endl;
     cout << "Next we will test, what happens, if i try to insert 2 animals of same name." << endl;
-    cout << "If 'Arttu' has Sea-Area, it means that newer Arttu replaced old one" << endl;
-    cout << "We will also test if printSortedByName works... Both 'Arttu' animals were added" << endl;
-    cout << "after some other animals, so if Arttu is toppest animal, printSortedByName works!" << endl;
+    cout << "If 'Arttu' has Sea-Area: CARIBBEAN_SEA, it means that newer Arttu replaced old one" << endl;
 
     Zoo zoo = Zoo();
     zoo.add(tiger10);
@@ -101,42 +100,31 @@ int main()
     cout << "Print sorted by name method: " << endl;
     zoo.printSortedByName();
     cout << endl;
-    cout << "As conclusion, Arttu had Sea-area, so treemap replaced old animal with new animal." << endl;
-    cout << "And 'Arttu' was the toppest animal, so printSortedByName works." << endl;
-    cout << endl;
-    cout << "Next we will test if printSortedByAgeWorks" << endl;
-    cout << endl;
 
+    cout << "Print sorted by birthdate method : " << endl;
     zoo.printSortedByAge();
     cout << endl;
+
     cout << "The printSortedByAge method works!" << endl;
     cout << endl;
 
-    cout << "Next add 'Arttu' tiger and replace 'Arttu' shark: " << endl;
-    zoo.add(tiger11);
+    cout << "Next we will try to add the tiger named 'arttu' again. " << endl;
+    cout << "Ideally add-command returns the info of the shark," << endl;
+    cout << "and then tiger named 'Arttu' is found in the list" << endl;
+    cout << zoo.add(tiger11)->toString() << endl;
     cout << endl;
+    cout << "As expected, adding returned the shark named 'Arttu'. Now make sure tiger replaced the shark:" << endl;
     zoo.printSortedByName();
     cout << endl;
-    cout << "As expected, add function replaced 'Arttu' shark with 'Arttu' tiger" << endl;
+    cout << "As expected, now tiger is inside the zoo, Continent word tells its tiger not shark!" << endl;
     cout << endl;
 
     cout << "Next trying out if the remove function works properly. Trying to remove the shark named 'Bandit'" << endl;
-    zoo.remove("Bandit");
+    cout << zoo.remove("Bandit")->toString() << endl;
     cout << "Bandit should we removed, print animals by name" << endl;
-    cout << endl;
     zoo.printSortedByName();
     cout << endl;
     cout << "Everything looks so far as expected. Therefore, the zoo class and all assisting classes seems to work correctly!" << endl;
 
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

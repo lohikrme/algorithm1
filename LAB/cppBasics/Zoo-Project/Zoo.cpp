@@ -35,3 +35,35 @@ void Zoo::printSortedByAge() {
 	}
 }
 
+
+Animal* Zoo::remove(string nameOfAnimal) {
+	try {
+		Animal* returnableAnimal = enclosures[nameOfAnimal];
+		enclosures.erase(nameOfAnimal);
+		return returnableAnimal;
+	}
+	catch (...) {
+		std::cout << "Animal could not be removed because does not exist." << std::endl;
+		return nullptr;
+	}
+}
+
+
+Animal* Zoo::add(Animal* newAnimal) {
+
+	Animal* returnableAnimal;
+
+	// check if animal* is found from map using its key (name)
+	auto inputAnimalIsInsideMap = enclosures.find(newAnimal->getName());
+
+	// if animal with same key already exists, replace it and then return the old animal
+	if (inputAnimalIsInsideMap != enclosures.end()) {
+		returnableAnimal = remove(newAnimal->getName());
+		enclosures[newAnimal->getName()] = newAnimal;
+		return returnableAnimal;
+	}
+	else {
+		enclosures[newAnimal->getName()] = newAnimal;
+		return nullptr;
+	}
+}

@@ -27,16 +27,12 @@ public:
         }
     }
 
-    void add(Animal* animal) {
-        enclosures[animal->getName()] = animal;
-    }
+
+    Animal* remove(std::string nameOfAnimal);
 
 
-    void remove(std::string nameOfAnimal) {
-        Animal* animal = enclosures[nameOfAnimal];
-        enclosures.erase(nameOfAnimal);
-        delete animal;
-    }
+    Animal* add(Animal* animal); 
+    
 
     void printSortedByName();
 

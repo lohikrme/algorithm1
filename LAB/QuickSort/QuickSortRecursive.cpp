@@ -83,16 +83,44 @@ void quickSortMedian(vector<int>& data, int lowestIndex, int highestIndex) {
     }
 }
 
+
+
 // Insertion method sorts numbers O(n^2) speed
 // good for pre-arranged or small datasets
-void insertionSort(vector<int>& data) {
-    for (int i = 0; i < data.size(); i++) {
+void insertionSort(vector<int>& data, int lowestIndex, int highestIndex) {
+    for (int i = lowestIndex; i < highestIndex; i++) {
 
-        for (int j = i; j > 0; j--) {
+        for (int j = i; j > lowestIndex; j--) {
 
             if (data[j - 1] > data[j]) {
                 itemSwap(data, j - 1, j);
             }
+        }
+    }
+}
+
+
+// function sorts numbers from smallest to largest using first quickSort, and later in small subsets insertionSort
+// include also the median of three methods inside hybrid
+void quickSortHybrid(vector<int>& data, int lowestIndex, int highestIndex, int insertionSubsetLength) {
+    if (lowestIndex < highestIndex) {
+
+        // Choose pivot to be the median value of first, middle and last item of vector
+        int middleIndex = lowestIndex + (highestIndex - lowestIndex) / 2;
+        if (data[middleIndex] < data[lowestIndex])
+            itemSwap(data, lowestIndex, middleIndex);
+        if (data[highestIndex] < data[lowestIndex])
+            itemSwap(data, lowestIndex, highestIndex);
+        if (data[highestIndex] < data[middleIndex])
+            itemSwap(data, middleIndex, highestIndex);
+
+        if (highestIndex - lowestIndex + 1 < insertionSubsetLength) {
+            insertionSort(data, lowestIndex, highestIndex);
+        }
+        else {
+            int pivotIndex = partition(data, lowestIndex, highestIndex);
+            quickSortHybrid(data, lowestIndex, pivotIndex - 1, insertionSubsetLength);
+            quickSortHybrid(data, pivotIndex + 1, highestIndex, insertionSubsetLength);
         }
     }
 }
@@ -106,31 +134,46 @@ int main()
     int amountOfNumbers = 75000;
     SecondClock timer;
 
-    //--------------------------------------------------------
-    // START THE QUICKSORTBASIC METHOD!!!
-    cout << "QuickSortBasic is starting..." << endl;
+    cout << "Quicksort main program is starting..." << endl;
+    cout << "Dataset size will be " << amountOfNumbers << " items." << endl;
 
-    // generate random numbers
+    // generate random numbers and take copy for each different algo, so every algo sorts same dataset
     cout << endl << "Generating random numbers begins!" << endl;
     timer.start();
     cout << timer.getTime() << endl;
     
-    vector<int> randomNumbers = randomizeNumbers(amountOfNumbers);
+    vector<int> randomNumbersOriginal = randomizeNumbers(amountOfNumbers);
+    vector<int> randomNumbersBasic = randomNumbersOriginal;
+    vector<int> randomNumbersMedian = randomNumbersOriginal;
+    vector<int> randomNumbersHybrid = randomNumbersOriginal;
+
+    ofstream unorderedFile("OutputFiles/NumbersUnordered.txt");
+    if (!unorderedFile) {
+        cerr << "Error opening outputfile for writing.\n";
+        return 1;
+    }
+
+    for (int i = 0; i < randomNumbersMedian.size(); i++) {
+        unorderedFile << to_string(randomNumbersMedian[i]) << '\n';
+    }
     
     cout << "Random numbers have been generated!" << endl;
     cout << timer.getTime() << endl;
     
-    // sort the numbers of vector using QuickSortBasic
+
+
+    //--------------------------------------------------------
+    // QUICKSORTBASIC METHOD!!!
     cout << endl << "Sorting the numbers using quickSortBasic begins!" << endl;
     timer.start();
     cout << timer.getTime() << endl;
-    quickSortBasic(randomNumbers, 0, randomNumbers.size() - 1);
+    quickSortBasic(randomNumbersBasic, 0, randomNumbersBasic.size() - 1);
     cout << "Numbers have been sorted!" << endl;
     cout << timer.getTime() << endl;
 
 
     // write the sorted numbers into a file
-    cout << endl << "Writing the numbers into Data/SortedNumbersBasic.txt begins!" << endl;
+    cout << endl << "Writing the numbers into OutputFiles/SortedNumbersBasic.txt begins!" << endl;
     timer.start();
     cout << timer.getTime() << endl;
 
@@ -140,39 +183,28 @@ int main()
         return 1;
     }
 
-    for (int i = 0; i < randomNumbers.size(); i++) {
-        basicFile << to_string(randomNumbers[i]) << '\n';
+    for (int i = 0; i < randomNumbersBasic.size(); i++) {
+        basicFile << to_string(randomNumbersBasic[i]) << '\n';
     }
     basicFile.close();
-    cout << "Numbers have been written in Data/SortedNumbersBasic.txt file!" << endl;
+    cout << "Numbers have been written in OutputFiles/SortedNumbersBasic.txt file!" << endl;
     cout << timer.getTime() << endl;
+
+
 
 
     //--------------------------------------------------------
-    // START THE QUICKSORTMEDIAN METHOD
-    cout << endl << "QuickSortMedian is starting..." << endl;
-
-    // generate random numbers
-    cout << endl << "Generating random numbers begins!" << endl;
-    timer.start();
-    cout << timer.getTime() << endl;
-
-    randomNumbers = randomizeNumbers(amountOfNumbers);
-
-    cout << "Random numbers have been generated!" << endl;
-    cout << timer.getTime() << endl;
-
-    // sort the numbers of vector using QuickSortMedian
+    // QUICKSORTMEDIAN METHOD!!!
     cout << endl << "Sorting the numbers using quickSortMedian begins!" << endl;
     timer.start();
     cout << timer.getTime() << endl;
-    quickSortMedian(randomNumbers, 0, randomNumbers.size() - 1);
+    quickSortMedian(randomNumbersMedian, 0, randomNumbersMedian.size() - 1);
     cout << "Numbers have been sorted!" << endl;
     cout << timer.getTime() << endl;
 
 
     // write the sorted numbers into a file
-    cout << endl << "Writing the numbers into Data/SortedNumbersMedian.txt begins!" << endl;
+    cout << endl << "Writing the numbers into OutputFiles/SortedNumbersMedian.txt begins!" << endl;
     timer.start();
     cout << timer.getTime() << endl;
 
@@ -182,13 +214,44 @@ int main()
         return 1;
     }
 
-    for (int i = 0; i < randomNumbers.size(); i++) {
-        medianFile << to_string(randomNumbers[i]) << '\n';
+    for (int i = 0; i < randomNumbersMedian.size(); i++) {
+        medianFile << to_string(randomNumbersMedian[i]) << '\n';
     }
     medianFile.close();
-    cout << "Numbers have been written in Data/SortedNumbersMedian.txt file!" << endl;
+    cout << "Numbers have been written in OutputFiles/SortedNumbersMedian.txt file!" << endl;
     cout << timer.getTime() << endl;
 
+
+    //--------------------------------------------------------
+    // QUICKSORTHYBRID METHOD!!!
+    
+    int insertionSubsetLength = 10;
+    cout << endl << "Sorting the numbers using quickSortHybrid begins!" << endl 
+        << "InsertionSubsetLength will be " << insertionSubsetLength << endl;
+    timer.start();
+    cout << timer.getTime() << endl;
+    quickSortHybrid(randomNumbersHybrid, 0, randomNumbersHybrid.size() - 1, insertionSubsetLength);
+    cout << "Numbers have been sorted!" << endl;
+    cout << timer.getTime() << endl;
+
+
+    // write the sorted numbers into a file
+    cout << endl << "Writing the numbers into OutputFiles/SortedNumbersHybrid.txt begins!" << endl;
+    timer.start();
+    cout << timer.getTime() << endl;
+
+    ofstream hybridFile("OutputFiles/SortedNumbersHybrid.txt");
+    if (!hybridFile) {
+        cerr << "Error opening outputfile for writing.\n";
+        return 1;
+    }
+
+    for (int i = 0; i < randomNumbersHybrid.size(); i++) {
+        hybridFile << to_string(randomNumbersHybrid[i]) << '\n';
+    }
+    hybridFile.close();
+    cout << "Numbers have been written in OutputFiles/SortedNumbersHybrid.txt file!" << endl;
+    cout << timer.getTime() << endl;
 
     // End the main program
     return 0;
