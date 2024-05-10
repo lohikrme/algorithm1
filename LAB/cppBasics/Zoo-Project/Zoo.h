@@ -4,9 +4,7 @@
 #include <map> // needed for map ds
 #include <vector> // needed for vector ds
 #include <algorithm> // needed for sorting the animals
-#include <string>
 #include "Animal.h"
-#include "Date.h"
 #include "AgeComparator.h"
 
 #pragma once

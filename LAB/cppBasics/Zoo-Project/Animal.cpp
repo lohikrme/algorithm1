@@ -1,5 +1,5 @@
 // Animal.cpp
-// 18th april 2024
+// 10th may 2024
 
 #include "Animal.h"
 
@@ -26,11 +26,59 @@ int Animal::weightComparison(double weight1, double weight2) {
 }
 
 string Animal::toString() {
-	return "Name " + this->name + " "
-		+ "Birthdate: " + this->birth.toString() + " "
-		+ "Weight: " + to_string(this->weight) + " "
-		+ "Gender: " + (this->female ? "female" : "male");
+
+	// CLEAN THE WEIGHT DECIMAL NUMBER TO SUITABLE AMOUNT OF MAX DECIMALS AND SIGNIFICANT NUMBERS ONLY
+
+	// osstringstream allows to set decimal accurasy of 3
+	ostringstream stream;
+	stream << std::fixed << setprecision(3) << this->weight;
+	string weightStr = stream.str();
+
+	// use stack to store numbers and dots
+	stack<char> number;
+
+	for (char& c : weightStr) {
+		number.push(c);
+	}
+
+	// delete numbers until meet significant number (1-9)
+	while (!number.empty() && (number.top() == '0' || number.top() == '.')) { 
+		if (number.top() == '.') {
+			number.pop();
+			break;
+		}
+		number.pop();
+	}
+
+	// move stack content into reverseWeigth string, also replace '.' with ','
+	string reverseWeight; 
+
+	while (!number.empty()) { 
+		if (number.top() == '.') {
+			reverseWeight += ',';
+			number.pop();
+		}
+		else {
+			reverseWeight += number.top();
+			number.pop();
+		}
+	}
+
+	// move reverseWeight content in weightStr in correct order
+	weightStr = ""; 
+
+	for (char& c : reverseWeight) {
+		weightStr = c + weightStr;
+	}
+
+	// PRINT THE ANIMAL ATTRIBUTES
+	return "Name " + this->name + ". "
+		+ "Species: " + this->speciesToString(this->species) + ". "
+		+ "Birthdate: " + this->birth.toString() + ". "
+		+ "Weight: " + weightStr + ". "
+		+ "Gender: " + (this->female ? "female" : "male") + ". ";
 }
+
 
 
 
@@ -74,3 +122,20 @@ std::string Animal::seaAreaToString(SeaAreas::Enum seaArea) {
 	default: return "UNKNOWN";
 	}
 }
+
+std::string Animal::speciesToString(Species::Enum species)
+{
+	switch (species) {
+	case Species::COBRA: return "COBRA";
+	case Species::CROCODILE: return "CROCODILE";
+	case Species::DOG: return "DOG";
+	case Species::ELEPHANT: return "ELEPHANT";
+	case Species::LIZARD: return "LIZARD";
+	case Species::MANGOOSE: return "MANGOOSE";
+	case Species::PARROT: return "PARROT";
+	case Species::SHARK: return "SHARK";
+	case Species::TIGER: return "TIGER";
+	default: return "UNKNOWN";
+	}
+}
+

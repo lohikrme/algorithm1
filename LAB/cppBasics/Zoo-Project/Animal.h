@@ -1,5 +1,5 @@
 // Animal.h
-// 18th april 2024
+// 10th may 2024
 
 #pragma once
 
@@ -8,11 +8,16 @@
 #include "Date.h"
 #include "Continents.h"
 #include "SeaAreas.h"
+#include "Species.h"
+#include <iomanip>
+#include <sstream>
+#include <stack>
 
 class Animal
 {
 private:
 	std::string name;
+	Species::Enum species;
 	Date birth;
 	double weight;
 	bool female;
@@ -27,14 +32,16 @@ public:
 	// default constructor
 	Animal() {
 		this->name = "Haukku";
-		this->birth = Date(1, 1, 2000);
-		this->weight = 200.5;
+		this->species = Species::LIZARD;
+		this->birth = Date(1, 1, 2010);
+		this->weight = 20.5;
 		this->female = true;
 	}
 
 	// constructor with parameters
-	Animal(std::string name, Date birthDate, double weight, bool female) {
+	Animal(std::string name, Species::Enum species, Date birthDate, double weight, bool female) {
 		this->name = name;
+		this->species = species;
 		this->birth = birthDate;
 		this->weight = weight;
 		this->female = female;
@@ -46,6 +53,14 @@ public:
 
 	void setName(std::string name) {
 		this->name = name;
+	}
+
+	Species::Enum getSpecies() const {
+		return this->species;
+	}
+
+	void setSpecies(Species::Enum sp) {
+		this->species = sp;
 	}
 
 	Date getBirth() const {
@@ -64,7 +79,7 @@ public:
 		this->weight = weight;
 	}
 
-	bool isFemale() {
+	bool isFemale() const {
 		return this->female;
 	}
 
@@ -80,8 +95,11 @@ public:
 	// used to transform continent enum to string
 	std::string continentToString(Continents::Enum continent);
 
-	// used to transform sea area to string
+	// used to transform sea area enum to string
 	std::string seaAreaToString(SeaAreas::Enum seaArea);
+
+	// used to transform species enum to string
+	std::string speciesToString(Species::Enum species);
 
 	// create operators that allow natural comparing of animal subclasses, e.g tiger1 < tiger2
 	bool operator<(const Animal& other) const {

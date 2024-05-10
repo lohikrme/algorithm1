@@ -1,11 +1,8 @@
 // Shark.h
-// 17th april 2024
+// 10th may 2024
 
 #include "Animal.h"
 #include <iostream>
-#include <string>
-#include "Date.h"
-#include "SeaAreas.h"
 
 #pragma once
 class Shark : public Animal
@@ -14,12 +11,12 @@ private:
 	SeaAreas::Enum sea;
 
 public:
-	Shark() : Animal() {
+	Shark() : Animal("Jaws", Species::SHARK, Date(1, 1, 2010), 1500, true) {
 		this->sea = SeaAreas::Enum::SARGASSO_SEA;
 	}
 
-	Shark(std::string name, Date birth, double weight, bool female, SeaAreas::Enum seaArea)
-		: Animal(name, birth, weight, female) {
+	Shark(std::string name, Species::Enum species, Date birth, double weight, bool female, SeaAreas::Enum seaArea)
+		: Animal(name, species, birth, weight, female) {
 		this->sea = seaArea;
 	}
 
@@ -40,7 +37,7 @@ public:
 	}
 
 	std::string toString() {
-		return Animal::toString() + " Sea area: " + seaAreaToString(this->sea);
+		return Animal::toString() + " Sea area: " + seaAreaToString(this->sea) + ". ";
 	}
 
 };

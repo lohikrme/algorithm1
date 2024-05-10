@@ -1,5 +1,5 @@
 // Zoo-Project.cpp : This file contains the 'main' function. Program execution begins and ends there.
-// 8th may 2024
+// 10th may 2024
 
 #include <iostream>
 #include <string>
@@ -17,6 +17,9 @@ using namespace std;
 
 int main()
 {
+    // allows printing 'öäå' letters
+    setlocale(LC_ALL, "");
+
     // test that Date object's basic abilities work
     cout << endl;
     cout << "Testing basic methods of Date object..." << endl;
@@ -50,7 +53,7 @@ int main()
     // test that tiger class that inherited Animal works
     cout << "Testing Tiger class..." << endl;
     Tiger tiger1 = Tiger();
-    Tiger tiger2 = Tiger("Tigru", date2, 255, false, Continents::ASIA);
+    Tiger tiger2 = Tiger("Tigru", Species::TIGER, date2, 255, false, Continents::ASIA);
     cout << "Tiger1: " + tiger1.toString() << endl;
     cout << "Tiger2: " + tiger2.toString() << endl;
     cout << tiger2.getName() << endl;
@@ -61,7 +64,7 @@ int main()
 
     // test that also Shark class works which also inherited Animal class
     cout << "Testing Shark class..." << endl;
-    Shark shark1 = Shark("Hampaaton", date3, 1500.2, true, SeaAreas::SOUTH_ATLANTIC_OCEAN);
+    Shark shark1 = Shark("Hampaaton", Species::SHARK, date3, 1500.2, true, SeaAreas::SOUTH_ATLANTIC_OCEAN);
     cout << shark1.toString() << endl;
     shark1.move();
     shark1.utter();
@@ -79,11 +82,11 @@ int main()
     Date date14 = Date(10, 10, 2015);
 
     // create pointers to animals using subclasses tiger and shark
-    Animal* tiger10 = new Tiger("David", date10, 350, false, Continents::ASIA);
-    Animal* tiger11 = new Tiger("Arttu", date11, 250, false, Continents::ASIA);
-    Animal* tiger12 = new Tiger("Silja", date12, 300, true, Continents::ASIA);
-    Animal* shark13 = new Shark("Arttu", date13, 750, false, SeaAreas::CARIBBEAN_SEA);
-    Animal* shark14 = new Shark("Bandit", date14, 800, true, SeaAreas::SARGASSO_SEA);
+    Animal* tiger10 = new Tiger("Öykkäri", Species::TIGER, date10, 350, false, Continents::ASIA);
+    Animal* tiger11 = new Tiger("Arttu", Species::TIGER, date11, 250, false, Continents::ASIA);
+    Animal* tiger12 = new Tiger("Silja", Species::TIGER, date12, 300.850000001, true, Continents::ASIA);
+    Animal* shark13 = new Shark("Arttu", Species::SHARK, date13, 750, false, SeaAreas::CARIBBEAN_SEA);
+    Animal* shark14 = new Shark("Bandit", Species::SHARK, date14, 800, true, SeaAreas::SARGASSO_SEA);
 
     cout << "Animals are created, 3 tigers and 2 sharks." << endl;
     cout << "Next we will test, what happens, if i try to insert 2 animals of same name." << endl;

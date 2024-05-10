@@ -1,12 +1,9 @@
 // Tiger.h
-// 17th april 2024
+// 10th may 2024
 
 
 #include "Animal.h"
 #include <iostream>
-#include <string>
-#include "Date.h"
-#include "Continents.h"
 
 #pragma once
 
@@ -16,12 +13,12 @@ private:
 	Continents::Enum continent;
 
 public:
-	Tiger() : Animal() {
+	Tiger() : Animal("Tigru", Species::TIGER, Date(1,1,2010), 210.5, true) {
 		this->continent = Continents::ASIA;
 	}
 
-	Tiger(std::string name, Date birth, double weight, bool female, Continents::Enum continent)
-	: Animal(name, birth, weight, female) {
+	Tiger(std::string name, Species::Enum species, Date birth, double weight, bool female, Continents::Enum continent)
+	: Animal(name, species, birth, weight, female) {
 		this->continent = continent;
 	}
 
@@ -42,7 +39,7 @@ public:
 	}
 
 	std::string toString() {
-		return Animal::toString() + " " + "Continent: " + continentToString(this->continent);
+		return Animal::toString() + "Continent: " + continentToString(this->continent) + ". ";
 	}
 };
 

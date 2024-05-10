@@ -141,6 +141,7 @@
     <ClInclude Include="Date.h" />
     <ClInclude Include="SeaAreas.h" />
     <ClInclude Include="Shark.h" />
+    <ClInclude Include="Species.h" />
     <ClInclude Include="Tiger.h" />
     <ClInclude Include="Zoo.h" />
   </ItemGroup>
