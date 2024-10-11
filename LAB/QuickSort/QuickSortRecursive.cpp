@@ -1,5 +1,5 @@
 // QuickSortRecursive.cpp 
-// 8th may 2024
+// 11th may 2024
 
 #include <iostream>
 #include <vector>
@@ -74,7 +74,7 @@ void quickSortMedian(vector<int>& data, int lowestIndex, int highestIndex) {
         if (data[highestIndex] < data[middleIndex])
             itemSwap(data, middleIndex, highestIndex);
 
-        // Move pivot to the end of vector before calling partition
+        // Move pivot to the end of vector before calling partition and recursive quickSortMedians
         itemSwap(data, middleIndex, highestIndex);
 
         int pivotIndex = partition(data, lowestIndex, highestIndex);
@@ -88,7 +88,7 @@ void quickSortMedian(vector<int>& data, int lowestIndex, int highestIndex) {
 // Insertion method sorts numbers O(n^2) speed
 // good for pre-arranged or small datasets
 void insertionSort(vector<int>& data, int lowestIndex, int highestIndex) {
-    for (int i = lowestIndex; i < highestIndex; i++) {
+    for (int i = lowestIndex; i <= highestIndex; i++) {
 
         for (int j = i; j > lowestIndex; j--) {
 
@@ -103,9 +103,19 @@ void insertionSort(vector<int>& data, int lowestIndex, int highestIndex) {
 // function sorts numbers from smallest to largest using first quickSort, and later in small subsets insertionSort
 // include also the median of three methods inside hybrid
 void quickSortHybrid(vector<int>& data, int lowestIndex, int highestIndex, int insertionSubsetLength) {
-    if (lowestIndex < highestIndex) {
 
+    // if subset length < X, use insertion sort
+    if (highestIndex - lowestIndex + 1 <= insertionSubsetLength) {
+        insertionSort(data, lowestIndex, highestIndex);
+    }
+
+    // else if subset length > X, use quicksort
+    else if (lowestIndex < highestIndex) {
         // Choose pivot to be the median value of first, middle and last item of vector
+        // imagine list [6,5,4,3,2,1]... take 6, 4, 1... then if 4 < 6, swap. 
+        // then we have 4, 6, 1... then if 1 < 4, swap. 
+        // then we have 1, 6, 4... then if 4 < 6 swap... 
+        // then we have 1, 4, 6 and median will be the middleIndex one.
         int middleIndex = lowestIndex + (highestIndex - lowestIndex) / 2;
         if (data[middleIndex] < data[lowestIndex])
             itemSwap(data, lowestIndex, middleIndex);
@@ -114,14 +124,12 @@ void quickSortHybrid(vector<int>& data, int lowestIndex, int highestIndex, int i
         if (data[highestIndex] < data[middleIndex])
             itemSwap(data, middleIndex, highestIndex);
 
-        if (highestIndex - lowestIndex + 1 < insertionSubsetLength) {
-            insertionSort(data, lowestIndex, highestIndex);
-        }
-        else {
-            int pivotIndex = partition(data, lowestIndex, highestIndex);
-            quickSortHybrid(data, lowestIndex, pivotIndex - 1, insertionSubsetLength);
-            quickSortHybrid(data, pivotIndex + 1, highestIndex, insertionSubsetLength);
-        }
+        // Move pivot to the end of vector before calling partition and recursive quickSortMedians
+        itemSwap(data, middleIndex, highestIndex);
+
+        int pivotIndex = partition(data, lowestIndex, highestIndex);
+        quickSortHybrid(data, lowestIndex, pivotIndex - 1, insertionSubsetLength);
+        quickSortHybrid(data, pivotIndex + 1, highestIndex, insertionSubsetLength);
     }
 }
 
@@ -225,7 +233,7 @@ int main()
     //--------------------------------------------------------
     // QUICKSORTHYBRID METHOD!!!
     
-    int insertionSubsetLength = 10;
+    int insertionSubsetLength = 8;
     cout << endl << "Sorting the numbers using quickSortHybrid begins!" << endl 
         << "InsertionSubsetLength will be " << insertionSubsetLength << endl;
     timer.start();
