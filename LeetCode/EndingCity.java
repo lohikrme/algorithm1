@@ -1,17 +1,15 @@
+// assingment: find cities that have only 
+// flying tickets in, not out from the city
+
 /* Logic:
 Divide cities to starting and end cities.
 Delete all starting cities from ending cities. 
 Name left will be the destination */
 
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
-class Solution {
-
-    public Scanner scan = new Scanner(System.in);
-
-    
+class EndingCity {
 
     public static void main(String[] args) {
         List<List<String>> paths = new ArrayList<>();
@@ -31,17 +29,16 @@ class Solution {
         path3.add("Sao Paulo");
         paths.add(path3);
 
-        Solution solution = new Solution();
+        EndingCity solution = new EndingCity();
         String answer = solution.destCity(paths);
         System.out.println(answer);
     }
 
-
     public String destCity(List<List<String>> paths) {
-       List <String> startingCities = new ArrayList <String>();
-       List <String> endingCities = new ArrayList <String>();
+        List<String> startingCities = new ArrayList<String>();
+        List<String> endingCities = new ArrayList<String>();
 
-        for (List <String> pairOfCities : paths) {
+        for (List<String> pairOfCities : paths) {
             startingCities.add(pairOfCities.get(0));
             endingCities.add(pairOfCities.get(1));
         }
